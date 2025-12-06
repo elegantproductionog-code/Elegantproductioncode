@@ -39,6 +39,10 @@
                 }
             }
         }
+
+        function showAlert() {
+            alert("Thank you! Your Request has been submitted!");
+        }
     </script>
 
     <style>
@@ -666,7 +670,7 @@
                             <textarea id="message" name="message" rows="4" required class="mt-1 block w-full px-4 py-3 bg-dark-900 border border-gray-700 rounded-md shadow-sm focus:ring-gold-500 focus:border-gold-500 text-white luxury-input"></textarea>
                         </div>
                         <div>
-                            <button type="submit" class="w-full bg-gold-500 hover:bg-gold-400 text-black font-bold py-3 px-6 rounded-md text-lg transition-colors shadow-lg uppercase tracking-wide">
+                            <button type="submit" onclick="showAlert()" class="w-full bg-gold-500 hover:bg-gold-400 text-black font-bold py-3 px-6 rounded-md text-lg transition-colors shadow-lg uppercase tracking-wide">
                                 Request My Free Design
                             </button>
                         </div>
