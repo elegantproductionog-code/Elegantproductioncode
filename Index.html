@@ -1,0 +1,874 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Elegant Production - Luxury Event Design</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- AOS Animation Library CSS -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    
+    <!-- Google Fonts: Prata (Elegant) & Inter (Professional) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Prata&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        gold: {
+                            400: '#D4AF37',
+                            500: '#C5A028',
+                            600: '#A08018',
+                        },
+                        dark: {
+                            900: '#050505',
+                            800: '#0F0F0F',
+                            700: '#1A1A1A'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        serif: ['Prata', 'serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #0F0F0F; }
+        ::-webkit-scrollbar-thumb { background: #333; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #D4AF37; }
+
+        body {
+            background-color: #050505;
+            color: #e5e5e5;
+            overflow-x: hidden; /* Prevent horizontal scroll from animations */
+        }
+
+        /* Floral Pattern Background */
+        .bg-floral {
+            background-color: #050505;
+            background-image: url("data:image/svg+xml,%3Csvg width='52' height='26' viewBox='0 0 52 26' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23D4AF37' fill-opacity='0.07'%3E%3Cpath d='M10 10c0-2.21-1.79-4-4-4-3.314 0-6-2.686-6-6h2c0 2.21 1.79 4 4 4 3.314 0 6 2.686 6 6 0 2.21 1.79 4 4 4 3.314 0 6 2.686 6 6 0 2.21 1.79 4 4 4v2c-3.314 0-6-2.686-6-6 0-2.21-1.79-4-4-4-3.314 0-6-2.686-6-6zm25.464-1.95l8.486 8.486-1.414 1.414-8.486-8.486 1.414-1.414z' /%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        }
+
+        /* Tab Transitions */
+        .tab-btn { transition: all 0.3s ease; }
+        .tab-btn-active { 
+            border-bottom: 2px solid #D4AF37; 
+            color: #D4AF37; 
+            font-weight: 700;
+        }
+        .tab-btn-inactive { 
+            border-bottom: 2px solid transparent; 
+            color: #6B7280; 
+        }
+        .tab-btn-inactive:hover { color: #D4AF37; }
+
+        /* Sub-category Pill Styles */
+        .sub-tab-btn { white-space: nowrap; transition: all 0.2s; }
+        .sub-tab-active {
+            background-color: #D4AF37;
+            color: black;
+            border: 1px solid #D4AF37;
+            font-weight: 600;
+        }
+        .sub-tab-inactive {
+            background-color: transparent;
+            color: #9CA3AF;
+            border: 1px solid #374151;
+        }
+        .sub-tab-inactive:hover {
+            border-color: #D4AF37;
+            color: #D4AF37;
+        }
+        
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+        /* Card Styling */
+        .luxury-card {
+            background-color: #0F0F0F;
+            border: 1px solid #222;
+            transition: transform 0.3s ease, border-color 0.3s ease;
+            cursor: pointer;
+        }
+        .luxury-card:hover {
+            transform: translateY(-5px);
+            border-color: #D4AF37;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+        
+        /* Input Styling */
+        .luxury-input {
+            background-color: #0F0F0F;
+            border: 1px solid #333;
+            color: white;
+            transition: border-color 0.3s;
+        }
+        .luxury-input:focus {
+            border-color: #D4AF37;
+            outline: none;
+            background-color: #141414;
+        }
+
+        /* Floating WhatsApp */
+        .whatsapp-float {
+            position: fixed;
+            width: 60px;
+            height: 60px;
+            bottom: 30px;
+            right: 30px;
+            background-color: #25d366;
+            color: #FFF;
+            border-radius: 50%;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.6);
+            z-index: 90; /* Lower than lightbox */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.3s;
+        }
+        .whatsapp-float:hover { transform: scale(1.1); }
+
+        /* Lightbox Modal */
+        #lightbox {
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+        #lightbox.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+    </style>
+</head>
+<body class="font-sans antialiased text-gray-300 bg-floral">
+
+    <!-- Lightbox Modal (Highest Z-Index) -->
+    <div id="lightbox" class="fixed inset-0 z-[100] bg-black bg-opacity-95 flex items-center justify-center p-4 backdrop-blur-md">
+        <button id="lightbox-close" class="absolute top-6 right-6 text-white hover:text-gold-400 transition-colors p-2 bg-black/50 rounded-full">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+        </button>
+        <div class="relative max-w-full max-h-full">
+            <img id="lightbox-img" src="" alt="Full Screen" class="max-h-[85vh] max-w-full shadow-2xl border border-dark-700 rounded-sm">
+            <div id="lightbox-caption" class="absolute -bottom-12 left-1/2 transform -translate-x-1/2 text-gold-400 text-lg font-serif tracking-wide text-center w-full"></div>
+        </div>
+    </div>
+
+    <!-- Floating WhatsApp Button -->
+    <a href="https://wa.me/919867120277" class="whatsapp-float" target="_blank">
+        <svg xmlns="http://www.w3.org/2000/svg" width="35" height="35" viewBox="0 0 24 24" fill="white"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
+    </a>
+
+    <!-- Header & Navigation -->
+    <header class="bg-dark-900 shadow-lg sticky top-0 z-50 border-b border-gray-800">
+        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <!-- Logo -->
+            <a href="#" class="text-2xl font-serif font-bold text-white">
+                ELEGANT <span class="text-gold-500">PRODUCTION</span>
+            </a>
+            
+            <!-- Desktop Navigation -->
+            <div class="hidden md:flex space-x-8 items-center">
+                <a href="#home" class="text-sm font-medium text-gray-300 hover:text-gold-400 transition-colors uppercase tracking-wider">Home</a>
+                <a href="#services" class="text-sm font-medium text-gray-300 hover:text-gold-400 transition-colors uppercase tracking-wider">Services</a>
+                <a href="#portfolio" class="text-sm font-medium text-gray-300 hover:text-gold-400 transition-colors uppercase tracking-wider">Portfolio</a>
+                <a href="#process" class="text-sm font-medium text-gray-300 hover:text-gold-400 transition-colors uppercase tracking-wider">Our Process</a>
+                <a href="#about" class="text-sm font-medium text-gray-300 hover:text-gold-400 transition-colors uppercase tracking-wider">About Us</a>
+                <a href="#contact" class="text-xs font-bold bg-gold-500 text-black hover:bg-gold-400 px-5 py-2 rounded transition-colors uppercase tracking-widest">
+                    Get a Quote
+                </a>
+            </div>
+
+            <!-- Mobile Menu Button -->
+            <button id="menu-btn" class="md:hidden text-white">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6">
+                    <line x1="3" y1="12" x2="21" y2="12"></line>
+                    <line x1="3" y1="6" x2="21" y2="6"></line>
+                    <line x1="3" y1="18" x2="21" y2="18"></line>
+                </svg>
+            </button>
+        </nav>
+
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden md:hidden bg-dark-800 border-t border-gray-800">
+            <a href="#home" class="block px-6 py-4 text-gray-300 hover:text-gold-400 border-b border-gray-700">Home</a>
+            <a href="#services" class="block px-6 py-4 text-gray-300 hover:text-gold-400 border-b border-gray-700">Services</a>
+            <a href="#portfolio" class="block px-6 py-4 text-gray-300 hover:text-gold-400 border-b border-gray-700">Portfolio</a>
+            <a href="#process" class="block px-6 py-4 text-gray-300 hover:text-gold-400 border-b border-gray-700">Our Process</a>
+            <a href="#about" class="block px-6 py-4 text-gray-300 hover:text-gold-400 border-b border-gray-700">About Us</a>
+            <a href="#contact" class="block px-6 py-4 text-gold-400 font-bold">Get a Quote</a>
+        </div>
+    </header>
+
+    <main>
+
+        <!-- Hero Section -->
+        <section id="home" class="relative min-h-[70vh] md:min-h-[80vh] flex items-center justify-center text-center text-white">
+            <div class="absolute inset-0 bg-cover bg-center" style="background-image: url('https://i.ibb.co/FLRBPbLy/ITEM-CODE-PDF-pdf-zip-3.jpg')">
+                <div class="absolute inset-0 bg-black opacity-70"></div>
+            </div>
+            
+            <div class="relative z-10 p-6" data-aos="fade-up" data-aos-duration="1200">
+                <h1 class="text-4xl md:text-6xl font-serif font-bold leading-tight mb-6">
+                    Transforming Visions into <span class="text-gold-500">Elegant Reality</span>
+                </h1>
+                <p class="text-lg md:text-xl text-gray-300 mb-10 max-w-2xl mx-auto font-light">
+                    Bespoke fabrication, exhibition stalls, and unforgettable wedding setups crafted with precision and quality.
+                </p>
+                <a href="#portfolio" class="bg-gold-500 hover:bg-gold-400 text-black font-bold py-3 px-8 rounded-sm text-lg transition-colors shadow-lg border border-gold-500">
+                    View Our Work
+                </a>
+            </div>
+        </section>
+
+        <!-- Services Section -->
+        <section id="services" class="py-20">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-16" data-aos="fade-down">
+                    <h2 class="text-3xl md:text-4xl font-serif font-bold text-white mb-4">Our Services</h2>
+                    <div class="w-20 h-1 bg-gold-500 mx-auto"></div>
+                    <p class="text-lg text-gray-400 mt-4 max-w-xl mx-auto">We bring your ideas to life with expert craftsmanship.</p>
+                </div>
+
+                <div class="grid md:grid-cols-3 gap-8">
+                    <!-- Service 1 -->
+                    <div class="luxury-card p-8 rounded-lg shadow-lg text-center" data-aos="fade-right" data-aos-delay="100">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="w-16 h-16 text-gold-500 mx-auto mb-6">
+                            <polygon points="6 3 18 3 22 9 12 21 2 9 6 3"></polygon>
+                            <path d="M12 21l-10-12"></path>
+                            <path d="M12 21l10-12"></path>
+                            <path d="M2 9h20"></path>
+                        </svg>
+                        <h3 class="text-2xl font-serif font-bold mb-3 text-white">Wedding Setups</h3>
+                        <p class="text-gray-400 font-light">
+                            From intimate ceremonies to grand receptions, we create breathtaking wedding environments using high-quality materials and floral designs.
+                        </p>
+                    </div>
+
+                    <!-- Service 2 -->
+                    <div class="luxury-card p-8 rounded-lg shadow-lg text-center" data-aos="fade-up" data-aos-delay="200">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="w-16 h-16 text-gold-500 mx-auto mb-6">
+                            <rect x="3" y="3" width="7" height="7"></rect>
+                            <rect x="14" y="3" width="7" height="7"></rect>
+                            <rect x="14" y="14" width="7" height="7"></rect>
+                            <rect x="3" y="14" width="7" height="7"></rect>
+                        </svg>
+                        <h3 class="text-2xl font-serif font-bold mb-3 text-white">Exhibition Stalls</h3>
+                        <p class="text-gray-400 font-light">
+                            Capture attention with a custom stall. We offer a <strong class="text-gold-400">free 3D design</strong> based on your color, size, and logo to help you visualize your booth.
+                        </p>
+                    </div>
+
+                    <!-- Service 3 -->
+                    <div class="luxury-card p-8 rounded-lg shadow-lg text-center" data-aos="fade-left" data-aos-delay="300">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="w-16 h-16 text-gold-500 mx-auto mb-6">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"></polygon>
+                        </svg>
+                        <h3 class="text-2xl font-serif font-bold mb-3 text-white">Custom Fabrications</h3>
+                        <p class="text-gray-400 font-light">
+                            If you can dream it, we can build it. We provide bespoke fabrication services for events, retail spaces, and unique projects.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Portfolio / Catalog Section -->
+        <section id="portfolio" class="py-20 bg-dark-800 relative">
+             <!-- Dark overlay for section distinction -->
+            <div class="absolute inset-0 bg-black opacity-30 pointer-events-none"></div>
+            
+            <div class="container mx-auto px-6 relative z-10">
+                <div class="text-center mb-12" data-aos="zoom-in">
+                    <h2 class="text-3xl md:text-4xl font-serif font-bold text-white mb-4">Our Work & Catalog</h2>
+                    <p class="text-lg text-gray-400 max-w-xl mx-auto">See our commitment to quality. Clients can reference the Setup Code when inquiring.</p>
+                </div>
+
+                <!-- Tab Navigation -->
+                <div class="flex justify-center mb-10 border-b border-gray-800" data-aos="fade-up">
+                    <button id="btn-weddings" class="tab-btn tab-btn-active text-lg font-medium py-3 px-6 border-b-2">
+                        Wedding Catalog
+                    </button>
+                    <button id="btn-exhibitions" class="tab-btn tab-btn-inactive text-lg font-medium py-3 px-6 border-b-2">
+                        Exhibitions & Events
+                    </button>
+                </div>
+
+                <!-- WEDDING SECTION -->
+                <div id="wedding-section">
+                    
+                    <!-- Wedding Sub-Category Menu -->
+                    <div class="flex overflow-x-auto no-scrollbar space-x-4 pb-6 mb-2 px-2 md:justify-center" data-aos="fade-right">
+                        <button onclick="showWeddingSub('stage')" id="sub-btn-stage" class="sub-tab-btn sub-tab-active px-5 py-2 rounded-full text-sm">
+                            Stage / Backdrop
+                        </button>
+                        <button onclick="showWeddingSub('entry')" id="sub-btn-entry" class="sub-tab-btn sub-tab-inactive px-5 py-2 rounded-full text-sm">
+                            Entry Gate
+                        </button>
+                        <button onclick="showWeddingSub('selfie')" id="sub-btn-selfie" class="sub-tab-btn sub-tab-inactive px-5 py-2 rounded-full text-sm">
+                            Selfie Point
+                        </button>
+                        <button onclick="showWeddingSub('itinerary')" id="sub-btn-itinerary" class="sub-tab-btn sub-tab-inactive px-5 py-2 rounded-full text-sm">
+                            Itinerary Wall
+                        </button>
+                        <button onclick="showWeddingSub('props')" id="sub-btn-props" class="sub-tab-btn sub-tab-inactive px-5 py-2 rounded-full text-sm">
+                            Wooden Props
+                        </button>
+                        <button onclick="showWeddingSub('tabletop')" id="sub-btn-tabletop" class="sub-tab-btn sub-tab-inactive px-5 py-2 rounded-full text-sm">
+                            Table Top
+                        </button>
+                    </div>
+
+                    <!-- Sub-Gallery: Stage / Backdrop -->
+                    <div id="gallery-wedding-stage" class="wedding-sub-gallery grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <!-- 22 Images with Lightbox Click and Scroll Animations -->
+                        <!-- Adding alternating fade-right/fade-left for visual interest -->
+                        <div class="luxury-card rounded-lg overflow-hidden shadow-lg" onclick="openLightbox(this)" data-aos="fade-up"><img src="https://i.ibb.co/FLRBPbLy/ITEM-CODE-PDF-pdf-zip-3.jpg" alt="W-001" class="w-full h-64 object-cover"><div class="p-4 bg-dark-800 border-t border-gray-800"><p class="font-bold text-gold-400 font-serif">Setup Code: W-001</p></div></div>
+                        <div class="luxury-card rounded-lg overflow-hidden shadow-lg" onclick="openLightbox(this)" data-aos="fade-up" data-aos-delay="100"><img src="https://i.ibb.co/KjprPKYv/ITEM-CODE-PDF-pdf-zip-7.jpg" alt="W-002" class="w-full h-64 object-cover"><div class="p-4 bg-dark-800 border-t border-gray-800"><p class="font-bold text-gold-400 font-serif">Setup Code: W-002</p></div></div>
+                        <div class="luxury-card rounded-lg overflow-hidden shadow-lg" onclick="openLightbox(this)" data-aos="fade-up" data-aos-delay="200"><img src="https://i.ibb.co/WNbmS2kV/ITEM-CODE-PDF-pdf-zip-8.jpg" alt="W-003" class="w-full h-64 object-cover"><div class="p-4 bg-dark-800 border-t border-gray-800"><p class="font-bold text-gold-400 font-serif">Setup Code: W-003</p></div></div>
+                        <div class="luxury-card rounded-lg overflow-hidden shadow-lg" onclick="openLightbox(this)" data-aos="fade-up"><img src="https://i.ibb.co/mgs1vGR/ITEM-CODE-PDF-pdf-zip-9.jpg" alt="W-004" class="w-full h-64 object-cover"><div class="p-4 bg-dark-800 border-t border-gray-800"><p class="font-bold text-gold-400 font-serif">Setup Code: W-004</p></div></div>
+                        <div class="luxury-card rounded-lg overflow-hidden shadow-lg" onclick="openLightbox(this)" data-aos="fade-up" data-aos-delay="100"><img src="https://i.ibb.co/prK32SXY/ITEM-CODE-PDF-pdf-zip-10.jpg" alt="W-005" class="w-full h-64 object-cover"><div class="p-4 bg-dark-800 border-t border-gray-800"><p class="font-bold text-gold-400 font-serif">Setup Code: W-005</p></div></div>
+                        <div class="luxury-card rounded-lg overflow-hidden shadow-lg" onclick="openLightbox(this)" data-aos="fade-up" data-aos-delay="200"><img src="https://i.ibb.co/n8kztkMg/ITEM-CODE-PDF-pdf-zip-13.jpg" alt="W-006" class="w-full h-64 object-cover"><div class="p-4 bg-dark-800 border-t border-gray-800"><p class="font-bold text-gold-400 font-serif">Setup Code: W-006</p></div></div>
+                        <div class="luxury-card rounded-lg overflow-hidden shadow-lg" onclick="openLightbox(this)" data-aos="fade-up"><img src="https://i.ibb.co/Ldt9DGHG/ITEM-CODE-PDF-pdf-zip-14.jpg" alt="W-007" class="w-full h-64 object-cover"><div class="p-4 bg-dark-800 border-t border-gray-800"><p class="font-bold text-gold-400 font-serif">Setup Code: W-007</p></div></div>
+                        <div class="luxury-card rounded-lg overflow-hidden shadow-lg" onclick="openLightbox(this)" data-aos="fade-up" data-aos-delay="100"><img src="https://i.ibb.co/RTdCY0mH/ITEM-CODE-PDF-pdf-zip-15.jpg" alt="W-008" class="w-full h-64 object-cover"><div class="p-4 bg-dark-800 border-t border-gray-800"><p class="font-bold text-gold-400 font-serif">Setup Code: W-008</p></div></div>
+                        <div class="luxury-card rounded-lg overflow-hidden shadow-lg" onclick="openLightbox(this)" data-aos="fade-up" data-aos-delay="200"><img src="https://i.ibb.co/M5GvSkp3/ITEM-CODE-PDF-pdf-zip-17.jpg" alt="W-009" class="w-full h-64 object-cover"><div class="p-4 bg-dark-800 border-t border-gray-800"><p class="font-bold text-gold-400 font-serif">Setup Code: W-009</p></div></div>
+                        <div class="luxury-card rounded-lg overflow-hidden shadow-lg" onclick="openLightbox(this)" data-aos="fade-up"><img src="https://i.ibb.co/MxjY0CcV/ITEM-CODE-PDF-pdf-zip-20.jpg" alt="W-010" class="w-full h-64 object-cover"><div class="p-4 bg-dark-800 border-t border-gray-800"><p class="font-bold text-gold-400 font-serif">Setup Code: W-010</p></div></div>
+                        <div class="luxury-card rounded-lg overflow-hidden shadow-lg" onclick="openLightbox(this)" data-aos="fade-up" data-aos-delay="100"><img src="https://i.ibb.co/Z1JMcg03/ITEM-CODE-PDF-pdf-zip-21.jpg" alt="W-011" class="w-full h-64 object-cover"><div class="p-4 bg-dark-800 border-t border-gray-800"><p class="font-bold text-gold-400 font-serif">Setup Code: W-011</p></div></div>
+                        <div class="luxury-card rounded-lg overflow-hidden shadow-lg" onclick="openLightbox(this)" data-aos="fade-up" data-aos-delay="200"><img src="https://i.ibb.co/nsmBr20v/ITEM-CODE-PDF-pdf-zip-22.jpg" alt="W-012" class="w-full h-64 object-cover"><div class="p-4 bg-dark-800 border-t border-gray-800"><p class="font-bold text-gold-400 font-serif">Setup Code: W-012</p></div></div>
+                        <div class="luxury-card rounded-lg overflow-hidden shadow-lg" onclick="openLightbox(this)" data-aos="fade-up"><img src="https://i.ibb.co/gMf6xGGc/ITEM-CODE-PDF-pdf-zip-23.jpg" alt="W-013" class="w-full h-64 object-cover"><div class="p-4 bg-dark-800 border-t border-gray-800"><p class="font-bold text-gold-400 font-serif">Setup Code: W-013</p></div></div>
+                        <div class="luxury-card rounded-lg overflow-hidden shadow-lg" onclick="openLightbox(this)" data-aos="fade-up" data-aos-delay="100"><img src="https://i.ibb.co/VpbSp6ZY/ITEM-CODE-PDF-pdf-zip-25.jpg" alt="W-014" class="w-full h-64 object-cover"><div class="p-4 bg-dark-800 border-t border-gray-800"><p class="font-bold text-gold-400 font-serif">Setup Code: W-014</p></div></div>
+                        <div class="luxury-card rounded-lg overflow-hidden shadow-lg" onclick="openLightbox(this)" data-aos="fade-up" data-aos-delay="200"><img src="https://i.ibb.co/5gMz1pJp/ITEM-CODE-PDF-pdf-zip-32.jpg" alt="W-015" class="w-full h-64 object-cover"><div class="p-4 bg-dark-800 border-t border-gray-800"><p class="font-bold text-gold-400 font-serif">Setup Code: W-015</p></div></div>
+                        <div class="luxury-card rounded-lg overflow-hidden shadow-lg" onclick="openLightbox(this)" data-aos="fade-up"><img src="https://i.ibb.co/c96C6tH/ITEM-CODE-PDF-pdf-zip-34.jpg" alt="W-016" class="w-full h-64 object-cover"><div class="p-4 bg-dark-800 border-t border-gray-800"><p class="font-bold text-gold-400 font-serif">Setup Code: W-016</p></div></div>
+                        <div class="luxury-card rounded-lg overflow-hidden shadow-lg" onclick="openLightbox(this)" data-aos="fade-up" data-aos-delay="100"><img src="https://i.ibb.co/M5nxtZHb/ITEM-CODE-PDF-pdf-zip-38.jpg" alt="W-017" class="w-full h-64 object-cover"><div class="p-4 bg-dark-800 border-t border-gray-800"><p class="font-bold text-gold-400 font-serif">Setup Code: W-017</p></div></div>
+                        <div class="luxury-card rounded-lg overflow-hidden shadow-lg" onclick="openLightbox(this)" data-aos="fade-up" data-aos-delay="200"><img src="https://i.ibb.co/3mvhw8p2/ITEM-CODE-PDF-pdf-zip-40.jpg" alt="W-018" class="w-full h-64 object-cover"><div class="p-4 bg-dark-800 border-t border-gray-800"><p class="font-bold text-gold-400 font-serif">Setup Code: W-018</p></div></div>
+                        <div class="luxury-card rounded-lg overflow-hidden shadow-lg" onclick="openLightbox(this)" data-aos="fade-up"><img src="https://i.ibb.co/DPdLqLGy/ITEM-CODE-PDF-pdf-zip-41.jpg" alt="W-019" class="w-full h-64 object-cover"><div class="p-4 bg-dark-800 border-t border-gray-800"><p class="font-bold text-gold-400 font-serif">Setup Code: W-019</p></div></div>
+                        <div class="luxury-card rounded-lg overflow-hidden shadow-lg" onclick="openLightbox(this)" data-aos="fade-up" data-aos-delay="100"><img src="https://i.ibb.co/DPZwM8s7/ITEM-CODE-PDF-pdf-zip-42.jpg" alt="W-020" class="w-full h-64 object-cover"><div class="p-4 bg-dark-800 border-t border-gray-800"><p class="font-bold text-gold-400 font-serif">Setup Code: W-020</p></div></div>
+                        <div class="luxury-card rounded-lg overflow-hidden shadow-lg" onclick="openLightbox(this)" data-aos="fade-up" data-aos-delay="200"><img src="https://i.ibb.co/BHJjmNNH/ITEM-CODE-PDF-pdf-zip-43.jpg" alt="W-021" class="w-full h-64 object-cover"><div class="p-4 bg-dark-800 border-t border-gray-800"><p class="font-bold text-gold-400 font-serif">Setup Code: W-021</p></div></div>
+                        <div class="luxury-card rounded-lg overflow-hidden shadow-lg" onclick="openLightbox(this)" data-aos="fade-up"><img src="https://i.ibb.co/5gFKw8xs/ITEM-CODE-PDF-pdf-zip-45.jpg" alt="W-022" class="w-full h-64 object-cover"><div class="p-4 bg-dark-800 border-t border-gray-800"><p class="font-bold text-gold-400 font-serif">Setup Code: W-022</p></div></div>
+                    </div>
+
+                    <!-- Sub-Gallery: Entry Gate -->
+                    <div id="gallery-wedding-entry" class="wedding-sub-gallery hidden grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <div class="luxury-card rounded-lg overflow-hidden shadow-lg" onclick="openLightbox(this)" data-aos="fade-up"><img src="https://i.ibb.co/QgN7pG4/ITEM-CODE-PDF-pdf-zip-51.jpg" alt="EG-001" class="w-full h-64 object-cover"><div class="p-4 bg-dark-800 border-t border-gray-800"><p class="font-bold text-gold-400 font-serif">Setup Code: EG-001</p></div></div>
+                        <div class="luxury-card rounded-lg overflow-hidden shadow-lg" onclick="openLightbox(this)" data-aos="fade-up" data-aos-delay="100"><img src="https://i.ibb.co/bhQpZF0/ITEM-CODE-PDF-pdf-zip-50.jpg" alt="EG-002" class="w-full h-64 object-cover"><div class="p-4 bg-dark-800 border-t border-gray-800"><p class="font-bold text-gold-400 font-serif">Setup Code: EG-002</p></div></div>
+                        <div class="luxury-card rounded-lg overflow-hidden shadow-lg" onclick="openLightbox(this)" data-aos="fade-up" data-aos-delay="200"><img src="https://i.ibb.co/YBT9f80x/ITEM-CODE-PDF-pdf-zip-49.jpg" alt="EG-003" class="w-full h-64 object-cover"><div class="p-4 bg-dark-800 border-t border-gray-800"><p class="font-bold text-gold-400 font-serif">Setup Code: EG-003</p></div></div>
+                        <div class="luxury-card rounded-lg overflow-hidden shadow-lg" onclick="openLightbox(this)" data-aos="fade-up"><img src="https://i.ibb.co/GvbDcRbk/ITEM-CODE-PDF-pdf-zip-48.jpg" alt="EG-004" class="w-full h-64 object-cover"><div class="p-4 bg-dark-800 border-t border-gray-800"><p class="font-bold text-gold-400 font-serif">Setup Code: EG-004</p></div></div>
+                    </div>
+
+                    <!-- Sub-Gallery: Selfie Point -->
+                    <div id="gallery-wedding-selfie" class="wedding-sub-gallery hidden grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <div class="luxury-card rounded-lg overflow-hidden shadow-lg" onclick="openLightbox(this)" data-aos="fade-up"><img src="https://i.ibb.co/nZgBcJS/ITEM-CODE-PDF-pdf-zip-58.jpg" alt="SP-001" class="w-full h-64 object-cover"><div class="p-4 bg-dark-800 border-t border-gray-800"><p class="font-bold text-gold-400 font-serif">Setup Code: SP-001</p></div></div>
+                        <div class="luxury-card rounded-lg overflow-hidden shadow-lg" onclick="openLightbox(this)" data-aos="fade-up" data-aos-delay="100"><img src="https://i.ibb.co/s9Nm1QjL/ITEM-CODE-PDF-pdf-zip-61.jpg" alt="SP-002" class="w-full h-64 object-cover"><div class="p-4 bg-dark-800 border-t border-gray-800"><p class="font-bold text-gold-400 font-serif">Setup Code: SP-002</p></div></div>
+                        <div class="luxury-card rounded-lg overflow-hidden shadow-lg" onclick="openLightbox(this)" data-aos="fade-up" data-aos-delay="200"><img src="https://i.ibb.co/q3pDTJvK/ITEM-CODE-PDF-pdf-zip-57.jpg" alt="SP-003" class="w-full h-64 object-cover"><div class="p-4 bg-dark-800 border-t border-gray-800"><p class="font-bold text-gold-400 font-serif">Setup Code: SP-003</p></div></div>
+                        <div class="luxury-card rounded-lg overflow-hidden shadow-lg" onclick="openLightbox(this)" data-aos="fade-up"><img src="https://i.ibb.co/wZym0dt2/ITEM-CODE-PDF-pdf-zip-59.jpg" alt="SP-004" class="w-full h-64 object-cover"><div class="p-4 bg-dark-800 border-t border-gray-800"><p class="font-bold text-gold-400 font-serif">Setup Code: SP-004</p></div></div>
+                        <div class="luxury-card rounded-lg overflow-hidden shadow-lg" onclick="openLightbox(this)" data-aos="fade-up" data-aos-delay="100"><img src="https://i.ibb.co/5WNzJrbx/ITEM-CODE-PDF-pdf-zip-60.jpg" alt="SP-005" class="w-full h-64 object-cover"><div class="p-4 bg-dark-800 border-t border-gray-800"><p class="font-bold text-gold-400 font-serif">Setup Code: SP-005</p></div></div>
+                        <div class="luxury-card rounded-lg overflow-hidden shadow-lg" onclick="openLightbox(this)" data-aos="fade-up" data-aos-delay="200"><img src="https://i.ibb.co/ZQDhnh4/ITEM-CODE-PDF-pdf-zip-56.jpg" alt="SP-006" class="w-full h-64 object-cover"><div class="p-4 bg-dark-800 border-t border-gray-800"><p class="font-bold text-gold-400 font-serif">Setup Code: SP-006</p></div></div>
+                        <div class="luxury-card rounded-lg overflow-hidden shadow-lg" onclick="openLightbox(this)" data-aos="fade-up"><img src="https://i.ibb.co/jP2Gb7WJ/ITEM-CODE-PDF-pdf-zip-64.jpg" alt="SP-007" class="w-full h-64 object-cover"><div class="p-4 bg-dark-800 border-t border-gray-800"><p class="font-bold text-gold-400 font-serif">Setup Code: SP-007</p></div></div>
+                        <div class="luxury-card rounded-lg overflow-hidden shadow-lg" onclick="openLightbox(this)" data-aos="fade-up" data-aos-delay="100"><img src="https://i.ibb.co/sdX7d31k/ITEM-CODE-PDF-pdf-zip-65.jpg" alt="SP-008" class="w-full h-64 object-cover"><div class="p-4 bg-dark-800 border-t border-gray-800"><p class="font-bold text-gold-400 font-serif">Setup Code: SP-008</p></div></div>
+                        <div class="luxury-card rounded-lg overflow-hidden shadow-lg" onclick="openLightbox(this)" data-aos="fade-up" data-aos-delay="200"><img src="https://i.ibb.co/zK9YCLP/ITEM-CODE-PDF-pdf-zip-63.jpg" alt="SP-009" class="w-full h-64 object-cover"><div class="p-4 bg-dark-800 border-t border-gray-800"><p class="font-bold text-gold-400 font-serif">Setup Code: SP-009</p></div></div>
+                        <div class="luxury-card rounded-lg overflow-hidden shadow-lg" onclick="openLightbox(this)" data-aos="fade-up"><img src="https://i.ibb.co/Pv3FFRdh/ITEM-CODE-PDF-pdf-zip-62.jpg" alt="SP-010" class="w-full h-64 object-cover"><div class="p-4 bg-dark-800 border-t border-gray-800"><p class="font-bold text-gold-400 font-serif">Setup Code: SP-010</p></div></div>
+                        <div class="luxury-card rounded-lg overflow-hidden shadow-lg" onclick="openLightbox(this)" data-aos="fade-up" data-aos-delay="100"><img src="https://i.ibb.co/Lhpkzj7B/ITEM-CODE-PDF-pdf-zip-66.jpg" alt="SP-011" class="w-full h-64 object-cover"><div class="p-4 bg-dark-800 border-t border-gray-800"><p class="font-bold text-gold-400 font-serif">Setup Code: SP-011</p></div></div>
+                        <div class="luxury-card rounded-lg overflow-hidden shadow-lg" onclick="openLightbox(this)" data-aos="fade-up" data-aos-delay="200"><img src="https://i.ibb.co/KcN2n7RS/ITEM-CODE-PDF-pdf-zip-71.jpg" alt="SP-012" class="w-full h-64 object-cover"><div class="p-4 bg-dark-800 border-t border-gray-800"><p class="font-bold text-gold-400 font-serif">Setup Code: SP-012</p></div></div>
+                        <div class="luxury-card rounded-lg overflow-hidden shadow-lg" onclick="openLightbox(this)" data-aos="fade-up"><img src="https://i.ibb.co/S4MsQTRZ/ITEM-CODE-PDF-pdf-zip-72.jpg" alt="SP-013" class="w-full h-64 object-cover"><div class="p-4 bg-dark-800 border-t border-gray-800"><p class="font-bold text-gold-400 font-serif">Setup Code: SP-013</p></div></div>
+                        <div class="luxury-card rounded-lg overflow-hidden shadow-lg" onclick="openLightbox(this)" data-aos="fade-up" data-aos-delay="100"><img src="https://i.ibb.co/9kL1ZgC1/ITEM-CODE-PDF-pdf-zip-75.jpg" alt="SP-014" class="w-full h-64 object-cover"><div class="p-4 bg-dark-800 border-t border-gray-800"><p class="font-bold text-gold-400 font-serif">Setup Code: SP-014</p></div></div>
+                        <div class="luxury-card rounded-lg overflow-hidden shadow-lg" onclick="openLightbox(this)" data-aos="fade-up" data-aos-delay="200"><img src="https://i.ibb.co/JbkW0Rc/ITEM-CODE-PDF-pdf-zip-78.jpg" alt="SP-015" class="w-full h-64 object-cover"><div class="p-4 bg-dark-800 border-t border-gray-800"><p class="font-bold text-gold-400 font-serif">Setup Code: SP-015</p></div></div>
+                        <div class="luxury-card rounded-lg overflow-hidden shadow-lg" onclick="openLightbox(this)" data-aos="fade-up"><img src="https://i.ibb.co/ynLwPxd0/ITEM-CODE-PDF-pdf-zip-79.jpg" alt="SP-016" class="w-full h-64 object-cover"><div class="p-4 bg-dark-800 border-t border-gray-800"><p class="font-bold text-gold-400 font-serif">Setup Code: SP-016</p></div></div>
+                        <div class="luxury-card rounded-lg overflow-hidden shadow-lg" onclick="openLightbox(this)" data-aos="fade-up" data-aos-delay="100"><img src="https://i.ibb.co/nMZ595P1/ITEM-CODE-PDF-pdf-zip-81.jpg" alt="SP-017" class="w-full h-64 object-cover"><div class="p-4 bg-dark-800 border-t border-gray-800"><p class="font-bold text-gold-400 font-serif">Setup Code: SP-017</p></div></div>
+                        <div class="luxury-card rounded-lg overflow-hidden shadow-lg" onclick="openLightbox(this)" data-aos="fade-up" data-aos-delay="200"><img src="https://i.ibb.co/6Rvnwsxk/ITEM-CODE-PDF-pdf-zip-82.jpg" alt="SP-018" class="w-full h-64 object-cover"><div class="p-4 bg-dark-800 border-t border-gray-800"><p class="font-bold text-gold-400 font-serif">Setup Code: SP-018</p></div></div>
+                        <div class="luxury-card rounded-lg overflow-hidden shadow-lg" onclick="openLightbox(this)" data-aos="fade-up"><img src="https://i.ibb.co/zWFYPQC0/ITEM-CODE-PDF-pdf-zip-83.jpg" alt="SP-019" class="w-full h-64 object-cover"><div class="p-4 bg-dark-800 border-t border-gray-800"><p class="font-bold text-gold-400 font-serif">Setup Code: SP-019</p></div></div>
+                        <div class="luxury-card rounded-lg overflow-hidden shadow-lg" onclick="openLightbox(this)" data-aos="fade-up" data-aos-delay="100"><img src="https://i.ibb.co/fY70gLnW/ITEM-CODE-PDF-pdf-zip-73.jpg" alt="SP-020" class="w-full h-64 object-cover"><div class="p-4 bg-dark-800 border-t border-gray-800"><p class="font-bold text-gold-400 font-serif">Setup Code: SP-020</p></div></div>
+                    </div>
+
+                    <!-- Sub-Gallery: Itinerary Wall -->
+                    <div id="gallery-wedding-itinerary" class="wedding-sub-gallery hidden grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <div class="luxury-card rounded-lg overflow-hidden shadow-lg" onclick="openLightbox(this)" data-aos="fade-up"><img src="https://i.ibb.co/wFLmGL7j/ITEM-CODE-PDF-pdf-zip-86.jpg" alt="IW-001" class="w-full h-64 object-cover"><div class="p-4 bg-dark-800 border-t border-gray-800"><p class="font-bold text-gold-400 font-serif">Setup Code: IW-001</p></div></div>
+                        <div class="luxury-card rounded-lg overflow-hidden shadow-lg" onclick="openLightbox(this)" data-aos="fade-up" data-aos-delay="100"><img src="https://i.ibb.co/qfZgxXp/ITEM-CODE-PDF-pdf-zip-87.jpg" alt="IW-002" class="w-full h-64 object-cover"><div class="p-4 bg-dark-800 border-t border-gray-800"><p class="font-bold text-gold-400 font-serif">Setup Code: IW-002</p></div></div>
+                    </div>
+
+                    <!-- Sub-Gallery: Wooden Props -->
+                    <div id="gallery-wedding-props" class="wedding-sub-gallery hidden grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <div class="luxury-card rounded-lg overflow-hidden shadow-lg" onclick="openLightbox(this)" data-aos="fade-up"><img src="https://i.ibb.co/DHFdxRVv/ITEM-CODE-PDF-pdf-zip-89.jpg" alt="WP-001" class="w-full h-64 object-cover"><div class="p-4 bg-dark-800 border-t border-gray-800"><p class="font-bold text-gold-400 font-serif">Setup Code: WP-001</p></div></div>
+                        <div class="luxury-card rounded-lg overflow-hidden shadow-lg" onclick="openLightbox(this)" data-aos="fade-up" data-aos-delay="100"><img src="https://i.ibb.co/Qvb5X7bx/ITEM-CODE-PDF-pdf-zip-92.jpg" alt="WP-002" class="w-full h-64 object-cover"><div class="p-4 bg-dark-800 border-t border-gray-800"><p class="font-bold text-gold-400 font-serif">Setup Code: WP-002</p></div></div>
+                        <div class="luxury-card rounded-lg overflow-hidden shadow-lg" onclick="openLightbox(this)" data-aos="fade-up" data-aos-delay="200"><img src="https://i.ibb.co/7x83NM8N/ITEM-CODE-PDF-pdf-zip-94.jpg" alt="WP-003" class="w-full h-64 object-cover"><div class="p-4 bg-dark-800 border-t border-gray-800"><p class="font-bold text-gold-400 font-serif">Setup Code: WP-003</p></div></div>
+                        <div class="luxury-card rounded-lg overflow-hidden shadow-lg" onclick="openLightbox(this)" data-aos="fade-up"><img src="https://i.ibb.co/nNQs2kJ7/ITEM-CODE-PDF-pdf-zip-98.jpg" alt="WP-004" class="w-full h-64 object-cover"><div class="p-4 bg-dark-800 border-t border-gray-800"><p class="font-bold text-gold-400 font-serif">Setup Code: WP-004</p></div></div>
+                        <div class="luxury-card rounded-lg overflow-hidden shadow-lg" onclick="openLightbox(this)" data-aos="fade-up" data-aos-delay="100"><img src="https://i.ibb.co/dJ7RW23Y/ITEM-CODE-PDF-pdf-zip-99.jpg" alt="WP-005" class="w-full h-64 object-cover"><div class="p-4 bg-dark-800 border-t border-gray-800"><p class="font-bold text-gold-400 font-serif">Setup Code: WP-005</p></div></div>
+                        <div class="luxury-card rounded-lg overflow-hidden shadow-lg" onclick="openLightbox(this)" data-aos="fade-up" data-aos-delay="200"><img src="https://i.ibb.co/d44Fy2Yj/ITEM-CODE-PDF-pdf-zip-102.jpg" alt="WP-006" class="w-full h-64 object-cover"><div class="p-4 bg-dark-800 border-t border-gray-800"><p class="font-bold text-gold-400 font-serif">Setup Code: WP-006</p></div></div>
+                        <div class="luxury-card rounded-lg overflow-hidden shadow-lg" onclick="openLightbox(this)" data-aos="fade-up"><img src="https://i.ibb.co/qMM9MGXZ/ITEM-CODE-PDF-pdf-zip-103.jpg" alt="WP-007" class="w-full h-64 object-cover"><div class="p-4 bg-dark-800 border-t border-gray-800"><p class="font-bold text-gold-400 font-serif">Setup Code: WP-007</p></div></div>
+                        <div class="luxury-card rounded-lg overflow-hidden shadow-lg" onclick="openLightbox(this)" data-aos="fade-up" data-aos-delay="100"><img src="https://i.ibb.co/6RYBCLNK/ITEM-CODE-PDF-pdf-zip-110.jpg" alt="WP-008" class="w-full h-64 object-cover"><div class="p-4 bg-dark-800 border-t border-gray-800"><p class="font-bold text-gold-400 font-serif">Setup Code: WP-008</p></div></div>
+                        <div class="luxury-card rounded-lg overflow-hidden shadow-lg" onclick="openLightbox(this)" data-aos="fade-up" data-aos-delay="200"><img src="https://i.ibb.co/zhMTmCZY/ITEM-CODE-PDF-pdf-zip-112.jpg" alt="WP-009" class="w-full h-64 object-cover"><div class="p-4 bg-dark-800 border-t border-gray-800"><p class="font-bold text-gold-400 font-serif">Setup Code: WP-009</p></div></div>
+                        <div class="luxury-card rounded-lg overflow-hidden shadow-lg" onclick="openLightbox(this)" data-aos="fade-up"><img src="https://i.ibb.co/YT2D0JM7/ITEM-CODE-PDF-pdf-zip-115.jpg" alt="WP-010" class="w-full h-64 object-cover"><div class="p-4 bg-dark-800 border-t border-gray-800"><p class="font-bold text-gold-400 font-serif">Setup Code: WP-010</p></div></div>
+                        <div class="luxury-card rounded-lg overflow-hidden shadow-lg" onclick="openLightbox(this)" data-aos="fade-up" data-aos-delay="100"><img src="https://i.ibb.co/0yXcWQsm/ITEM-CODE-PDF-pdf-zip-116.jpg" alt="WP-011" class="w-full h-64 object-cover"><div class="p-4 bg-dark-800 border-t border-gray-800"><p class="font-bold text-gold-400 font-serif">Setup Code: WP-011</p></div></div>
+                        <div class="luxury-card rounded-lg overflow-hidden shadow-lg" onclick="openLightbox(this)" data-aos="fade-up" data-aos-delay="200"><img src="https://i.ibb.co/MxWhPh3w/ITEM-CODE-PDF-pdf-zip-121.jpg" alt="WP-012" class="w-full h-64 object-cover"><div class="p-4 bg-dark-800 border-t border-gray-800"><p class="font-bold text-gold-400 font-serif">Setup Code: WP-012</p></div></div>
+                        <div class="luxury-card rounded-lg overflow-hidden shadow-lg" onclick="openLightbox(this)" data-aos="fade-up"><img src="https://i.ibb.co/YTd7RvYC/ITEM-CODE-PDF-pdf-zip-124.jpg" alt="WP-013" class="w-full h-64 object-cover"><div class="p-4 bg-dark-800 border-t border-gray-800"><p class="font-bold text-gold-400 font-serif">Setup Code: WP-013</p></div></div>
+                        <div class="luxury-card rounded-lg overflow-hidden shadow-lg" onclick="openLightbox(this)" data-aos="fade-up" data-aos-delay="100"><img src="https://i.ibb.co/WNdrnvWf/ITEM-CODE-PDF-pdf-zip-127.jpg" alt="WP-014" class="w-full h-64 object-cover"><div class="p-4 bg-dark-800 border-t border-gray-800"><p class="font-bold text-gold-400 font-serif">Setup Code: WP-014</p></div></div>
+                        <div class="luxury-card rounded-lg overflow-hidden shadow-lg" onclick="openLightbox(this)" data-aos="fade-up" data-aos-delay="200"><img src="https://i.ibb.co/DD5RV582/ITEM-CODE-PDF-pdf-zip-133.jpg" alt="WP-015" class="w-full h-64 object-cover"><div class="p-4 bg-dark-800 border-t border-gray-800"><p class="font-bold text-gold-400 font-serif">Setup Code: WP-015</p></div></div>
+                        <div class="luxury-card rounded-lg overflow-hidden shadow-lg" onclick="openLightbox(this)" data-aos="fade-up"><img src="https://i.ibb.co/9mdb5DMz/ITEM-CODE-PDF-pdf-zip-136.jpg" alt="WP-016" class="w-full h-64 object-cover"><div class="p-4 bg-dark-800 border-t border-gray-800"><p class="font-bold text-gold-400 font-serif">Setup Code: WP-016</p></div></div>
+                        <div class="luxury-card rounded-lg overflow-hidden shadow-lg" onclick="openLightbox(this)" data-aos="fade-up" data-aos-delay="100"><img src="https://i.ibb.co/ksV2gRhd/ITEM-CODE-PDF-pdf-zip-139.jpg" alt="WP-017" class="w-full h-64 object-cover"><div class="p-4 bg-dark-800 border-t border-gray-800"><p class="font-bold text-gold-400 font-serif">Setup Code: WP-017</p></div></div>
+                        <div class="luxury-card rounded-lg overflow-hidden shadow-lg" onclick="openLightbox(this)" data-aos="fade-up" data-aos-delay="200"><img src="https://i.ibb.co/Psnz2zbj/ITEM-CODE-PDF-pdf-zip-142.jpg" alt="WP-018" class="w-full h-64 object-cover"><div class="p-4 bg-dark-800 border-t border-gray-800"><p class="font-bold text-gold-400 font-serif">Setup Code: WP-018</p></div></div>
+                        <div class="luxury-card rounded-lg overflow-hidden shadow-lg" onclick="openLightbox(this)" data-aos="fade-up"><img src="https://i.ibb.co/XTg90N8/ITEM-CODE-PDF-pdf-zip-149.jpg" alt="WP-019" class="w-full h-64 object-cover"><div class="p-4 bg-dark-800 border-t border-gray-800"><p class="font-bold text-gold-400 font-serif">Setup Code: WP-019</p></div></div>
+                        <div class="luxury-card rounded-lg overflow-hidden shadow-lg" onclick="openLightbox(this)" data-aos="fade-up" data-aos-delay="100"><img src="https://i.ibb.co/tTcbZ9V2/ITEM-CODE-PDF-pdf-zip-152.jpg" alt="WP-020" class="w-full h-64 object-cover"><div class="p-4 bg-dark-800 border-t border-gray-800"><p class="font-bold text-gold-400 font-serif">Setup Code: WP-020</p></div></div>
+                    </div>
+
+                    <!-- Sub-Gallery: Table Top -->
+                    <div id="gallery-wedding-tabletop" class="wedding-sub-gallery hidden grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <div class="luxury-card rounded-lg overflow-hidden shadow-lg" onclick="openLightbox(this)" data-aos="fade-up"><img src="https://i.ibb.co/pvKQqqsH/ITEM-CODE-PDF-pdf-zip-156.jpg" alt="TT-001" class="w-full h-64 object-cover"><div class="p-4 bg-dark-800 border-t border-gray-800"><p class="font-bold text-gold-400 font-serif">Setup Code: TT-001</p></div></div>
+                        <div class="luxury-card rounded-lg overflow-hidden shadow-lg" onclick="openLightbox(this)" data-aos="fade-up" data-aos-delay="100"><img src="https://i.ibb.co/zWyRB0cJ/ITEM-CODE-PDF-pdf-zip-157.jpg" alt="TT-002" class="w-full h-64 object-cover"><div class="p-4 bg-dark-800 border-t border-gray-800"><p class="font-bold text-gold-400 font-serif">Setup Code: TT-002</p></div></div>
+                        <div class="luxury-card rounded-lg overflow-hidden shadow-lg" onclick="openLightbox(this)" data-aos="fade-up" data-aos-delay="200"><img src="https://i.ibb.co/4wtCRGsh/ITEM-CODE-PDF-pdf-zip-158.jpg" alt="TT-003" class="w-full h-64 object-cover"><div class="p-4 bg-dark-800 border-t border-gray-800"><p class="font-bold text-gold-400 font-serif">Setup Code: TT-003</p></div></div>
+                        <div class="luxury-card rounded-lg overflow-hidden shadow-lg" onclick="openLightbox(this)" data-aos="fade-up"><img src="https://i.ibb.co/CKxz8TPn/ITEM-CODE-PDF-pdf-zip-159.jpg" alt="TT-004" class="w-full h-64 object-cover"><div class="p-4 bg-dark-800 border-t border-gray-800"><p class="font-bold text-gold-400 font-serif">Setup Code: TT-004</p></div></div>
+                        <div class="luxury-card rounded-lg overflow-hidden shadow-lg" onclick="openLightbox(this)" data-aos="fade-up" data-aos-delay="100"><img src="https://i.ibb.co/d4HmsBvP/ITEM-CODE-PDF-pdf-zip-160.jpg" alt="TT-005" class="w-full h-64 object-cover"><div class="p-4 bg-dark-800 border-t border-gray-800"><p class="font-bold text-gold-400 font-serif">Setup Code: TT-005</p></div></div>
+                    </div>
+
+                </div>
+
+                <!-- EXHIBITION SECTION -->
+                <div id="wedding-section-3d" class="hidden">
+                    <div class="flex overflow-x-auto no-scrollbar space-x-6 pb-6 mb-6 px-4 md:justify-center border-b border-gray-800">
+                        <button onclick="showExhibitionSub('3d')" id="sub-btn-3d" class="sub-tab-active px-5 py-2 text-sm font-bold uppercase transition-colors">3D Design Models</button>
+                        <button onclick="showExhibitionSub('real')" id="sub-btn-real" class="sub-tab-inactive px-5 py-2 text-sm font-bold uppercase transition-colors">Real Projects</button>
+                    </div>
+
+                    <!-- 3D Models -->
+                    <div id="gallery-exhibition-3d" class="exhibition-sub-gallery grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <div class="luxury-card rounded-lg overflow-hidden shadow-lg" onclick="openLightbox(this)" data-aos="fade-up"><img src="https://i.ibb.co/Cpys3YNV/IMG-0647.jpg" alt="3D-001" class="w-full h-64 object-cover"><div class="p-4 bg-dark-800 border-t border-gray-800"><p class="font-bold text-gold-400 font-serif">Setup Code: 3D-001</p></div></div>
+                        <div class="luxury-card rounded-lg overflow-hidden shadow-lg" onclick="openLightbox(this)" data-aos="fade-up" data-aos-delay="100"><img src="https://i.ibb.co/cXJJmVs4/IMG-0643.jpg" alt="3D-002" class="w-full h-64 object-cover"><div class="p-4 bg-dark-800 border-t border-gray-800"><p class="font-bold text-gold-400 font-serif">Setup Code: 3D-002</p></div></div>
+                        <div class="luxury-card rounded-lg overflow-hidden shadow-lg" onclick="openLightbox(this)" data-aos="fade-up" data-aos-delay="200"><img src="https://i.ibb.co/4Z496tK4/IMG-0641.jpg" alt="3D-003" class="w-full h-64 object-cover"><div class="p-4 bg-dark-800 border-t border-gray-800"><p class="font-bold text-gold-400 font-serif">Setup Code: 3D-003</p></div></div>
+                        <div class="luxury-card rounded-lg overflow-hidden shadow-lg" onclick="openLightbox(this)" data-aos="fade-up"><img src="https://i.ibb.co/LzF69Ysr/IMG-0618.jpg" alt="3D-004" class="w-full h-64 object-cover"><div class="p-4 bg-dark-800 border-t border-gray-800"><p class="font-bold text-gold-400 font-serif">Setup Code: 3D-004</p></div></div>
+                        <div class="luxury-card rounded-lg overflow-hidden shadow-lg" onclick="openLightbox(this)" data-aos="fade-up" data-aos-delay="100"><img src="https://i.ibb.co/hRy8FF8Z/IMG-0614.jpg" alt="3D-005" class="w-full h-64 object-cover"><div class="p-4 bg-dark-800 border-t border-gray-800"><p class="font-bold text-gold-400 font-serif">Setup Code: 3D-005</p></div></div>
+                        <div class="luxury-card rounded-lg overflow-hidden shadow-lg" onclick="openLightbox(this)" data-aos="fade-up" data-aos-delay="200"><img src="https://i.ibb.co/pBrSYSMG/IMG-0613.jpg" alt="3D-006" class="w-full h-64 object-cover"><div class="p-4 bg-dark-800 border-t border-gray-800"><p class="font-bold text-gold-400 font-serif">Setup Code: 3D-006</p></div></div>
+                        <div class="luxury-card rounded-lg overflow-hidden shadow-lg" onclick="openLightbox(this)" data-aos="fade-up"><img src="https://i.ibb.co/Y4WphcxN/IMG-0599.jpg" alt="3D-007" class="w-full h-64 object-cover"><div class="p-4 bg-dark-800 border-t border-gray-800"><p class="font-bold text-gold-400 font-serif">Setup Code: 3D-007</p></div></div>
+                        <div class="luxury-card rounded-lg overflow-hidden shadow-lg" onclick="openLightbox(this)" data-aos="fade-up" data-aos-delay="100"><img src="https://i.ibb.co/QF4wfnH7/IMG-0598.jpg" alt="3D-008" class="w-full h-64 object-cover"><div class="p-4 bg-dark-800 border-t border-gray-800"><p class="font-bold text-gold-400 font-serif">Setup Code: 3D-008</p></div></div>
+                        <div class="luxury-card rounded-lg overflow-hidden shadow-lg" onclick="openLightbox(this)" data-aos="fade-up" data-aos-delay="200"><img src="https://i.ibb.co/xKnpwPGd/IMG-0594.jpg" alt="3D-009" class="w-full h-64 object-cover"><div class="p-4 bg-dark-800 border-t border-gray-800"><p class="font-bold text-gold-400 font-serif">Setup Code: 3D-009</p></div></div>
+                        <div class="luxury-card rounded-lg overflow-hidden shadow-lg" onclick="openLightbox(this)" data-aos="fade-up"><img src="https://i.ibb.co/pjsjr1n8/IMG-0593.jpg" alt="3D-010" class="w-full h-64 object-cover"><div class="p-4 bg-dark-800 border-t border-gray-800"><p class="font-bold text-gold-400 font-serif">Setup Code: 3D-010</p></div></div>
+                    </div>
+
+                    <!-- Real Projects -->
+                    <div id="gallery-exhibition-real" class="exhibition-sub-gallery hidden grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <div class="luxury-card rounded-lg overflow-hidden shadow-lg" onclick="openLightbox(this)" data-aos="fade-up"><img src="https://i.ibb.co/qYv37FgV/IMG-0679.jpg" alt="RP-001" class="w-full h-64 object-cover"><div class="p-4 bg-dark-800 border-t border-gray-800"><p class="font-bold text-gold-400 font-serif">Setup Code: RP-001</p></div></div>
+                        <div class="luxury-card rounded-lg overflow-hidden shadow-lg" onclick="openLightbox(this)" data-aos="fade-up" data-aos-delay="100"><img src="https://i.ibb.co/4ndnJkW4/IMG-0680.jpg" alt="RP-002" class="w-full h-64 object-cover"><div class="p-4 bg-dark-800 border-t border-gray-800"><p class="font-bold text-gold-400 font-serif">Setup Code: RP-002</p></div></div>
+                        <div class="luxury-card rounded-lg overflow-hidden shadow-lg" onclick="openLightbox(this)" data-aos="fade-up" data-aos-delay="200"><img src="https://i.ibb.co/Tx47P0dR/IMG-0678.jpg" alt="RP-003" class="w-full h-64 object-cover"><div class="p-4 bg-dark-800 border-t border-gray-800"><p class="font-bold text-gold-400 font-serif">Setup Code: RP-003</p></div></div>
+                        <div class="luxury-card rounded-lg overflow-hidden shadow-lg" onclick="openLightbox(this)" data-aos="fade-up"><img src="https://i.ibb.co/d4VwLFCj/IMG-0670.jpg" alt="RP-004" class="w-full h-64 object-cover"><div class="p-4 bg-dark-800 border-t border-gray-800"><p class="font-bold text-gold-400 font-serif">Setup Code: RP-004</p></div></div>
+                        <div class="luxury-card rounded-lg overflow-hidden shadow-lg" onclick="openLightbox(this)" data-aos="fade-up" data-aos-delay="100"><img src="https://i.ibb.co/qFWzPLC3/IMG-0667.jpg" alt="RP-005" class="w-full h-64 object-cover"><div class="p-4 bg-dark-800 border-t border-gray-800"><p class="font-bold text-gold-400 font-serif">Setup Code: RP-005</p></div></div>
+                        <div class="luxury-card rounded-lg overflow-hidden shadow-lg" onclick="openLightbox(this)" data-aos="fade-up" data-aos-delay="200"><img src="https://i.ibb.co/N6X50rjg/IMG-0664.jpg" alt="RP-006" class="w-full h-64 object-cover"><div class="p-4 bg-dark-800 border-t border-gray-800"><p class="font-bold text-gold-400 font-serif">Setup Code: RP-006</p></div></div>
+                        <div class="luxury-card rounded-lg overflow-hidden shadow-lg" onclick="openLightbox(this)" data-aos="fade-up"><img src="https://i.ibb.co/HT7zMktN/IMG-0663.jpg" alt="RP-007" class="w-full h-64 object-cover"><div class="p-4 bg-dark-800 border-t border-gray-800"><p class="font-bold text-gold-400 font-serif">Setup Code: RP-007</p></div></div>
+                        <div class="luxury-card rounded-lg overflow-hidden shadow-lg" onclick="openLightbox(this)" data-aos="fade-up" data-aos-delay="100"><img src="https://i.ibb.co/1t9s0qZD/IMG-0665.jpg" alt="RP-008" class="w-full h-64 object-cover"><div class="p-4 bg-dark-800 border-t border-gray-800"><p class="font-bold text-gold-400 font-serif">Setup Code: RP-008</p></div></div>
+                        <div class="luxury-card rounded-lg overflow-hidden shadow-lg" onclick="openLightbox(this)" data-aos="fade-up" data-aos-delay="200"><img src="https://i.ibb.co/xST4gX3r/IMG-0662.jpg" alt="RP-009" class="w-full h-64 object-cover"><div class="p-4 bg-dark-800 border-t border-gray-800"><p class="font-bold text-gold-400 font-serif">Setup Code: RP-009</p></div></div>
+                        <div class="luxury-card rounded-lg overflow-hidden shadow-lg" onclick="openLightbox(this)" data-aos="fade-up"><img src="https://i.ibb.co/JWYnR5Y1/IMG-0661.jpg" alt="RP-010" class="w-full h-64 object-cover"><div class="p-4 bg-dark-800 border-t border-gray-800"><p class="font-bold text-gold-400 font-serif">Setup Code: RP-010</p></div></div>
+                        <div class="luxury-card rounded-lg overflow-hidden shadow-lg" onclick="openLightbox(this)" data-aos="fade-up" data-aos-delay="100"><img src="https://i.ibb.co/Z67FpXkm/IMG-0655.jpg" alt="RP-011" class="w-full h-64 object-cover"><div class="p-4 bg-dark-800 border-t border-gray-800"><p class="font-bold text-gold-400 font-serif">Setup Code: RP-011</p></div></div>
+                        <div class="luxury-card rounded-lg overflow-hidden shadow-lg" onclick="openLightbox(this)" data-aos="fade-up" data-aos-delay="200"><img src="https://i.ibb.co/0pyzHYKS/IMG-0654.jpg" alt="RP-012" class="w-full h-64 object-cover"><div class="p-4 bg-dark-800 border-t border-gray-800"><p class="font-bold text-gold-400 font-serif">Setup Code: RP-012</p></div></div>
+                        <div class="luxury-card rounded-lg overflow-hidden shadow-lg" onclick="openLightbox(this)" data-aos="fade-up"><img src="https://i.ibb.co/rRJyYnBp/IMG-0653.jpg" alt="RP-013" class="w-full h-64 object-cover"><div class="p-4 bg-dark-800 border-t border-gray-800"><p class="font-bold text-gold-400 font-serif">Setup Code: RP-013</p></div></div>
+                        <div class="luxury-card rounded-lg overflow-hidden shadow-lg" onclick="openLightbox(this)" data-aos="fade-up" data-aos-delay="100"><img src="https://i.ibb.co/YBXdWDRm/IMG-0657.jpg" alt="RP-014" class="w-full h-64 object-cover"><div class="p-4 bg-dark-800 border-t border-gray-800"><p class="font-bold text-gold-400 font-serif">Setup Code: RP-014</p></div></div>
+                        <div class="luxury-card rounded-lg overflow-hidden shadow-lg" onclick="openLightbox(this)" data-aos="fade-up" data-aos-delay="200"><img src="https://i.ibb.co/NdWKmcxh/IMG-0638.jpg" alt="RP-015" class="w-full h-64 object-cover"><div class="p-4 bg-dark-800 border-t border-gray-800"><p class="font-bold text-gold-400 font-serif">Setup Code: RP-015</p></div></div>
+                        <div class="luxury-card rounded-lg overflow-hidden shadow-lg" onclick="openLightbox(this)" data-aos="fade-up"><img src="https://i.ibb.co/4nWbNSZJ/IMG-0637.jpg" alt="RP-016" class="w-full h-64 object-cover"><div class="p-4 bg-dark-800 border-t border-gray-800"><p class="font-bold text-gold-400 font-serif">Setup Code: RP-016</p></div></div>
+                        <div class="luxury-card rounded-lg overflow-hidden shadow-lg" onclick="openLightbox(this)" data-aos="fade-up" data-aos-delay="100"><img src="https://i.ibb.co/LX0BqcL4/IMG-0639.jpg" alt="RP-017" class="w-full h-64 object-cover"><div class="p-4 bg-dark-800 border-t border-gray-800"><p class="font-bold text-gold-400 font-serif">Setup Code: RP-017</p></div></div>
+                        <div class="luxury-card rounded-lg overflow-hidden shadow-lg" onclick="openLightbox(this)" data-aos="fade-up" data-aos-delay="200"><img src="https://i.ibb.co/XxfxLNxT/IMG-0636.jpg" alt="RP-018" class="w-full h-64 object-cover"><div class="p-4 bg-dark-800 border-t border-gray-800"><p class="font-bold text-gold-400 font-serif">Setup Code: RP-018</p></div></div>
+                        <div class="luxury-card rounded-lg overflow-hidden shadow-lg" onclick="openLightbox(this)" data-aos="fade-up"><img src="https://i.ibb.co/9H6LpC8T/IMG-0635.jpg" alt="RP-019" class="w-full h-64 object-cover"><div class="p-4 bg-dark-800 border-t border-gray-800"><p class="font-bold text-gold-400 font-serif">Setup Code: RP-019</p></div></div>
+                        <div class="luxury-card rounded-lg overflow-hidden shadow-lg" onclick="openLightbox(this)" data-aos="fade-up" data-aos-delay="100"><img src="https://i.ibb.co/vxzV9c30/IMG-0634.jpg" alt="RP-020" class="w-full h-64 object-cover"><div class="p-4 bg-dark-800 border-t border-gray-800"><p class="font-bold text-gold-400 font-serif">Setup Code: RP-020</p></div></div>
+                        <div class="luxury-card rounded-lg overflow-hidden shadow-lg" onclick="openLightbox(this)" data-aos="fade-up" data-aos-delay="200"><img src="https://i.ibb.co/B2XNxfR5/IMG-0633.jpg" alt="RP-021" class="w-full h-64 object-cover"><div class="p-4 bg-dark-800 border-t border-gray-800"><p class="font-bold text-gold-400 font-serif">Setup Code: RP-021</p></div></div>
+                        <div class="luxury-card rounded-lg overflow-hidden shadow-lg" onclick="openLightbox(this)" data-aos="fade-up"><img src="https://i.ibb.co/3XkyYbK/IMG-0632.jpg" alt="RP-022" class="w-full h-64 object-cover"><div class="p-4 bg-dark-800 border-t border-gray-800"><p class="font-bold text-gold-400 font-serif">Setup Code: RP-022</p></div></div>
+                        <div class="luxury-card rounded-lg overflow-hidden shadow-lg" onclick="openLightbox(this)" data-aos="fade-up" data-aos-delay="100"><img src="https://i.ibb.co/LbDT82C/IMG-0631.jpg" alt="RP-023" class="w-full h-64 object-cover"><div class="p-4 bg-dark-800 border-t border-gray-800"><p class="font-bold text-gold-400 font-serif">Setup Code: RP-023</p></div></div>
+                        <div class="luxury-card rounded-lg overflow-hidden shadow-lg" onclick="openLightbox(this)" data-aos="fade-up" data-aos-delay="200"><img src="https://i.ibb.co/r2hs2hRJ/IMG-0630.jpg" alt="RP-024" class="w-full h-64 object-cover"><div class="p-4 bg-dark-800 border-t border-gray-800"><p class="font-bold text-gold-400 font-serif">Setup Code: RP-024</p></div></div>
+                        <div class="luxury-card rounded-lg overflow-hidden shadow-lg" onclick="openLightbox(this)" data-aos="fade-up"><img src="https://i.ibb.co/pBtcMhYV/IMG-0628.jpg" alt="RP-025" class="w-full h-64 object-cover"><div class="p-4 bg-dark-800 border-t border-gray-800"><p class="font-bold text-gold-400 font-serif">Setup Code: RP-025</p></div></div>
+                        <div class="luxury-card rounded-lg overflow-hidden shadow-lg" onclick="openLightbox(this)" data-aos="fade-up" data-aos-delay="100"><img src="https://i.ibb.co/LbsRxhd/IMG-0629.jpg" alt="RP-026" class="w-full h-64 object-cover"><div class="p-4 bg-dark-800 border-t border-gray-800"><p class="font-bold text-gold-400 font-serif">Setup Code: RP-026</p></div></div>
+                        <div class="luxury-card rounded-lg overflow-hidden shadow-lg" onclick="openLightbox(this)" data-aos="fade-up" data-aos-delay="200"><img src="https://i.ibb.co/F4bRHFjd/IMG-0623.jpg" alt="RP-027" class="w-full h-64 object-cover"><div class="p-4 bg-dark-800 border-t border-gray-800"><p class="font-bold text-gold-400 font-serif">Setup Code: RP-027</p></div></div>
+                        <div class="luxury-card rounded-lg overflow-hidden shadow-lg" onclick="openLightbox(this)" data-aos="fade-up"><img src="https://i.ibb.co/6RwYjxHL/IMG-0620.jpg" alt="RP-028" class="w-full h-64 object-cover"><div class="p-4 bg-dark-800 border-t border-gray-800"><p class="font-bold text-gold-400 font-serif">Setup Code: RP-028</p></div></div>
+                        <div class="luxury-card rounded-lg overflow-hidden shadow-lg" onclick="openLightbox(this)" data-aos="fade-up" data-aos-delay="100"><img src="https://i.ibb.co/4g73fWJf/IMG-0622.jpg" alt="RP-029" class="w-full h-64 object-cover"><div class="p-4 bg-dark-800 border-t border-gray-800"><p class="font-bold text-gold-400 font-serif">Setup Code: RP-029</p></div></div>
+                        <div class="luxury-card rounded-lg overflow-hidden shadow-lg" onclick="openLightbox(this)" data-aos="fade-up" data-aos-delay="200"><img src="https://i.ibb.co/TqDTzkBY/IMG-0616.jpg" alt="RP-030" class="w-full h-64 object-cover"><div class="p-4 bg-dark-800 border-t border-gray-800"><p class="font-bold text-gold-400 font-serif">Setup Code: RP-030</p></div></div>
+                        <div class="luxury-card rounded-lg overflow-hidden shadow-lg" onclick="openLightbox(this)" data-aos="fade-up"><img src="https://i.ibb.co/TMXZCZwH/IMG-0615.jpg" alt="RP-031" class="w-full h-64 object-cover"><div class="p-4 bg-dark-800 border-t border-gray-800"><p class="font-bold text-gold-400 font-serif">Setup Code: RP-031</p></div></div>
+                        <div class="luxury-card rounded-lg overflow-hidden shadow-lg" onclick="openLightbox(this)" data-aos="fade-up" data-aos-delay="100"><img src="https://i.ibb.co/G33NT65K/IMG-0610.jpg" alt="RP-032" class="w-full h-64 object-cover"><div class="p-4 bg-dark-800 border-t border-gray-800"><p class="font-bold text-gold-400 font-serif">Setup Code: RP-032</p></div></div>
+                        <div class="luxury-card rounded-lg overflow-hidden shadow-lg" onclick="openLightbox(this)" data-aos="fade-up" data-aos-delay="200"><img src="https://i.ibb.co/60gp6Fcg/IMG-0611.jpg" alt="RP-033" class="w-full h-64 object-cover"><div class="p-4 bg-dark-800 border-t border-gray-800"><p class="font-bold text-gold-400 font-serif">Setup Code: RP-033</p></div></div>
+                        <div class="luxury-card rounded-lg overflow-hidden shadow-lg" onclick="openLightbox(this)" data-aos="fade-up"><img src="https://i.ibb.co/xShM3b4w/IMG-0607.jpg" alt="RP-034" class="w-full h-64 object-cover"><div class="p-4 bg-dark-800 border-t border-gray-800"><p class="font-bold text-gold-400 font-serif">Setup Code: RP-034</p></div></div>
+                        <div class="luxury-card rounded-lg overflow-hidden shadow-lg" onclick="openLightbox(this)" data-aos="fade-up" data-aos-delay="100"><img src="https://i.ibb.co/ZzVFnZ19/IMG-0606.jpg" alt="RP-035" class="w-full h-64 object-cover"><div class="p-4 bg-dark-800 border-t border-gray-800"><p class="font-bold text-gold-400 font-serif">Setup Code: RP-035</p></div></div>
+                        <div class="luxury-card rounded-lg overflow-hidden shadow-lg" onclick="openLightbox(this)" data-aos="fade-up" data-aos-delay="200"><img src="https://i.ibb.co/JWKXL71r/IMG-0609.jpg" alt="RP-036" class="w-full h-64 object-cover"><div class="p-4 bg-dark-800 border-t border-gray-800"><p class="font-bold text-gold-400 font-serif">Setup Code: RP-036</p></div></div>
+                        <div class="luxury-card rounded-lg overflow-hidden shadow-lg" onclick="openLightbox(this)" data-aos="fade-up"><img src="https://i.ibb.co/VWjB51Px/IMG-0608.jpg" alt="RP-037" class="w-full h-64 object-cover"><div class="p-4 bg-dark-800 border-t border-gray-800"><p class="font-bold text-gold-400 font-serif">Setup Code: RP-037</p></div></div>
+                        <div class="luxury-card rounded-lg overflow-hidden shadow-lg" onclick="openLightbox(this)" data-aos="fade-up" data-aos-delay="100"><img src="https://i.ibb.co/0pPJ8g3W/IMG-0605.jpg" alt="RP-038" class="w-full h-64 object-cover"><div class="p-4 bg-dark-800 border-t border-gray-800"><p class="font-bold text-gold-400 font-serif">Setup Code: RP-038</p></div></div>
+                        <div class="luxury-card rounded-lg overflow-hidden shadow-lg" onclick="openLightbox(this)" data-aos="fade-up" data-aos-delay="200"><img src="https://i.ibb.co/vvJGDdjF/IMG-0604.jpg" alt="RP-039" class="w-full h-64 object-cover"><div class="p-4 bg-dark-800 border-t border-gray-800"><p class="font-bold text-gold-400 font-serif">Setup Code: RP-039</p></div></div>
+                        <div class="luxury-card rounded-lg overflow-hidden shadow-lg" onclick="openLightbox(this)" data-aos="fade-up"><img src="https://i.ibb.co/kgfjXQn2/IMG-0601.jpg" alt="RP-040" class="w-full h-64 object-cover"><div class="p-4 bg-dark-800 border-t border-gray-800"><p class="font-bold text-gold-400 font-serif">Setup Code: RP-040</p></div></div>
+                        <div class="luxury-card rounded-lg overflow-hidden shadow-lg" onclick="openLightbox(this)" data-aos="fade-up" data-aos-delay="100"><img src="https://i.ibb.co/Kx7Yvtvc/IMG-0595.jpg" alt="RP-041" class="w-full h-64 object-cover"><div class="p-4 bg-dark-800 border-t border-gray-800"><p class="font-bold text-gold-400 font-serif">Setup Code: RP-041</p></div></div>
+                        <div class="luxury-card rounded-lg overflow-hidden shadow-lg" onclick="openLightbox(this)" data-aos="fade-up" data-aos-delay="200"><img src="https://i.ibb.co/zVKbwp6W/IMG-0591.jpg" alt="RP-042" class="w-full h-64 object-cover"><div class="p-4 bg-dark-800 border-t border-gray-800"><p class="font-bold text-gold-400 font-serif">Setup Code: RP-042</p></div></div>
+                        <div class="luxury-card rounded-lg overflow-hidden shadow-lg" onclick="openLightbox(this)" data-aos="fade-up"><img src="https://i.ibb.co/d0mMJTD0/IMG-0590.jpg" alt="RP-043" class="w-full h-64 object-cover"><div class="p-4 bg-dark-800 border-t border-gray-800"><p class="font-bold text-gold-400 font-serif">Setup Code: RP-043</p></div></div>
+                        <div class="luxury-card rounded-lg overflow-hidden shadow-lg" onclick="openLightbox(this)" data-aos="fade-up" data-aos-delay="100"><img src="https://i.ibb.co/tgcdZQk/IMG-0592.jpg" alt="RP-044" class="w-full h-64 object-cover"><div class="p-4 bg-dark-800 border-t border-gray-800"><p class="font-bold text-gold-400 font-serif">Setup Code: RP-044</p></div></div>
+                        <div class="luxury-card rounded-lg overflow-hidden shadow-lg" onclick="openLightbox(this)" data-aos="fade-up" data-aos-delay="200"><img src="https://i.ibb.co/T90Ltwf/IMG-0589.jpg" alt="RP-045" class="w-full h-64 object-cover"><div class="p-4 bg-dark-800 border-t border-gray-800"><p class="font-bold text-gold-400 font-serif">Setup Code: RP-045</p></div></div>
+                        <div class="luxury-card rounded-lg overflow-hidden shadow-lg" onclick="openLightbox(this)" data-aos="fade-up"><img src="https://i.ibb.co/RGnqjhHC/IMG-0588.jpg" alt="RP-046" class="w-full h-64 object-cover"><div class="p-4 bg-dark-800 border-t border-gray-800"><p class="font-bold text-gold-400 font-serif">Setup Code: RP-046</p></div></div>
+                        <div class="luxury-card rounded-lg overflow-hidden shadow-lg" onclick="openLightbox(this)" data-aos="fade-up" data-aos-delay="100"><img src="https://i.ibb.co/TqLb1Bd0/IMG-0586.jpg" alt="RP-047" class="w-full h-64 object-cover"><div class="p-4 bg-dark-800 border-t border-gray-800"><p class="font-bold text-gold-400 font-serif">Setup Code: RP-047</p></div></div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- Our Process Section -->
+        <section id="process" class="py-20 bg-floral">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-16" data-aos="fade-up">
+                    <h2 class="text-3xl md:text-4xl font-serif font-bold text-white mb-4">Our Stall Design Process</h2>
+                    <p class="text-lg text-gray-400 max-w-2xl mx-auto">From concept to completion in 4 simple steps.</p>
+                </div>
+
+                <div class="grid md:grid-cols-4 gap-8 max-w-6xl mx-auto">
+                    <div class="text-center p-6" data-aos="fade-right" data-aos-delay="100">
+                        <div class="flex items-center justify-center w-20 h-20 bg-dark-800 text-gold-500 rounded-full mx-auto mb-6 border border-gold-500">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="w-10 h-10"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+                        </div>
+                        <h3 class="text-xl font-serif font-bold mb-2 text-white">1. Consultation</h3>
+                        <p class="text-gray-400 font-light text-sm">You provide your requirements (stall size, colors) and your company logo as a `.cdr` file.</p>
+                    </div>
+                    <div class="text-center p-6" data-aos="fade-up" data-aos-delay="200">
+                        <div class="flex items-center justify-center w-20 h-20 bg-dark-800 text-gold-500 rounded-full mx-auto mb-6 border border-gold-500">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="w-10 h-10"><path d="M5 3a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2H5z"></path><path d="M9 3v18"></path><path d="M15 3v18"></path><path d="M3 9h18"></path><path d="M3 15h18"></path></svg>
+                        </div>
+                        <h3 class="text-xl font-serif font-bold mb-2 text-white">2. Free 3D Design</h3>
+                        <p class="text-gray-400 font-light text-sm">We create a custom 3D model of your stall and send it to you on <strong class="text-gold-400">WhatsApp</strong> for your approval.</p>
+                    </div>
+                    <div class="text-center p-6" data-aos="fade-up" data-aos-delay="300">
+                        <div class="flex items-center justify-center w-20 h-20 bg-dark-800 text-gold-500 rounded-full mx-auto mb-6 border border-gold-500">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="w-10 h-10"><path d="M15 12l-8.373 8.373a1 1 0 1 1-1.414-1.414l8.373-8.373L12 15l3-3z"></path><path d="M9.172 14.828L12 12l-2.828-2.828C7.11 7.11 2 2 2 2s5.11 5.11 7.172 7.172z"></path></svg>
+                        </div>
+                        <h3 class="text-xl font-serif font-bold mb-2 text-white">3. Precision Fabrication</h3>
+                        <p class="text-gray-400 font-light text-sm">Once approved, our team builds every component of your stall using high-quality materials.</p>
+                    </div>
+                    <div class="text-center p-6" data-aos="fade-left" data-aos-delay="400">
+                        <div class="flex items-center justify-center w-20 h-20 bg-dark-800 text-gold-500 rounded-full mx-auto mb-6 border border-gold-500">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="w-10 h-10"><rect x="1" y="3" width="15" height="13"></rect><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon><circle cx="5.5" cy="18.5" r="2.5"></circle><circle cx="18.5" cy="18.5" r="2.5"></circle></svg>
+                        </div>
+                        <h3 class="text-xl font-serif font-bold mb-2 text-white">4. On-Site Installation</h3>
+                        <p class="text-gray-400 font-light text-sm">We deliver and professionally install your stall at the exhibition, ensuring it's perfect for the event.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- About Us Section -->
+        <section id="about" class="py-20 bg-dark-800">
+            <div class="container mx-auto px-6 grid md:grid-cols-2 gap-12 items-center">
+                <div data-aos="fade-right">
+                    <img src="https://placehold.co/600x400/333/AAA?text=Our+Workshop" alt="Elegant Production Workshop" class="rounded-lg shadow-xl border border-gray-800">
+                </div>
+                <div data-aos="fade-left">
+                    <h2 class="text-3xl md:text-4xl font-serif font-bold text-white mb-6">About Elegant Production</h2>
+                    <p class="text-lg text-gray-400 mb-4 font-light">
+                        Founded by **Nitin Jaiswal** and **Ketan Badgujar**, Elegant Production is driven by a passion for design and a commitment to perfection.
+                    </p>
+                    <p class="text-gray-400 mb-6 font-light">
+                        We believe that **quality materials** are the foundation of any great design. Under their leadership, our team of skilled fabricators, designers, and event managers work closely with you to ensure every detail is flawless, from the initial concept to the final installation.
+                    </p>
+                    
+                    <!-- Founders Box -->
+                    <div class="bg-dark-900 p-6 rounded-lg border border-gray-800 mb-6">
+                        <h3 class="text-xl font-serif font-bold text-gold-500 mb-3">Meet the Owners</h3>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <p class="font-bold text-white text-lg">Nitin Jaiswal</p>
+                                <p class="text-sm text-gray-500 uppercase tracking-wide">Founder</p>
+                            </div>
+                            <div>
+                                <p class="font-bold text-white text-lg">Ketan Badgujar</p>
+                                <p class="text-sm text-gray-500 uppercase tracking-wide">Founder</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flex space-x-6">
+                        <div class="flex items-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6 text-gold-500 mr-2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+                            <span class="font-medium text-gray-300">Premium Materials</span>
+                        </div>
+                        <div class="flex items-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6 text-gold-500 mr-2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+                            <span class="font-medium text-gray-300">Bespoke Designs</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Testimonials Section -->
+        <section id="testimonials" class="py-20 bg-floral text-white">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-12" data-aos="fade-up">
+                    <h2 class="text-3xl md:text-4xl font-serif font-bold mb-4">What Our Clients Say</h2>
+                </div>
+                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <div class="bg-dark-800 p-8 rounded-lg border border-gray-800" data-aos="flip-left" data-aos-delay="100">
+                        <p class="text-lg italic text-gray-400 mb-6 font-light">"Elegant Production transformed our wedding day into a fairy tale. The attention to detail and the quality of the materials were beyond our expectations. Simply stunning!"</p>
+                        <p class="font-bold text-gold-400 font-serif">- Priya & Rohan S.</p>
+                        <span class="text-sm text-gray-500 uppercase tracking-wide">Wedding Client</span>
+                    </div>
+                    <div class="bg-dark-800 p-8 rounded-lg border border-gray-800" data-aos="flip-left" data-aos-delay="200">
+                        <p class="text-lg italic text-gray-400 mb-6 font-light">"The free 3D design was a game-changer. We saw exactly what our stall would look like, and the final product was identical. Flawless fabrication and top-notch service."</p>
+                        <p class="font-bold text-gold-400 font-serif">- Sameer Verma</p>
+                        <span class="text-sm text-gray-500 uppercase tracking-wide">Marketing Director</span>
+                    </div>
+                    <div class="bg-dark-800 p-8 rounded-lg border border-gray-800" data-aos="flip-left" data-aos-delay="300">
+                        <p class="text-lg italic text-gray-400 mb-6 font-light">"Nitin and Ketan are a pleasure to work with. They understood our brand requirements instantly and delivered a stall that stood out in the entire exhibition hall."</p>
+                        <p class="font-bold text-gold-400 font-serif">- Rahul Mehta</p>
+                        <span class="text-sm text-gray-500 uppercase tracking-wide">CEO, Mehta Exports</span>
+                    </div>
+                    <div class="bg-dark-800 p-8 rounded-lg border border-gray-800" data-aos="flip-left" data-aos-delay="400">
+                        <p class="text-lg italic text-gray-400 mb-6 font-light">"We hired them for our daughter's Sangeet ceremony. The lighting and stage setup were magical. The team is very professional and punctual."</p>
+                        <p class="font-bold text-gold-400 font-serif">- Anjali Desai</p>
+                        <span class="text-sm text-gray-500 uppercase tracking-wide">Wedding Client</span>
+                    </div>
+                    <div class="bg-dark-800 p-8 rounded-lg border border-gray-800" data-aos="flip-left" data-aos-delay="500">
+                        <p class="text-lg italic text-gray-400 mb-6 font-light">"Best fabrication quality in Mumbai. They handled our last-minute requirements with ease and the pricing was very transparent. Highly recommended!"</p>
+                        <p class="font-bold text-gold-400 font-serif">- Vikram Singh</p>
+                        <span class="text-sm text-gray-500 uppercase tracking-wide">Event Manager</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Contact Section -->
+        <section id="contact" class="py-20 bg-dark-800">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-12" data-aos="fade-up">
+                    <h2 class="text-3xl md:text-4xl font-serif font-bold text-white mb-4">Get Your Free 3D Design</h2>
+                    <p class="text-lg text-gray-400 max-w-xl mx-auto">Let's discuss your vision. Contact us today to start planning your perfect event.</p>
+                </div>
+
+                <div class="max-w-4xl mx-auto grid md:grid-cols-2 gap-12">
+                    <!-- Functional Form -->
+                    <form name="contact" method="POST" data-netlify="true" class="space-y-6" data-aos="fade-right">
+                        <div>
+                            <label for="name" class="block text-sm font-medium text-gray-400">Full Name</label>
+                            <input type="text" id="name" name="name" required class="mt-1 block w-full px-4 py-3 bg-dark-900 border border-gray-700 rounded-md shadow-sm focus:ring-gold-500 focus:border-gold-500 text-white luxury-input">
+                        </div>
+                        <div>
+                            <label for="email" class="block text-sm font-medium text-gray-400">Email Address</label>
+                            <input type="email" id="email" name="email" required class="mt-1 block w-full px-4 py-3 bg-dark-900 border border-gray-700 rounded-md shadow-sm focus:ring-gold-500 focus:border-gold-500 text-white luxury-input">
+                        </div>
+                        <div>
+                            <label for="phone" class="block text-sm font-medium text-gray-400">WhatsApp Number</label>
+                            <input type="tel" id="phone" name="phone" placeholder="So we can send your 3D design" class="mt-1 block w-full px-4 py-3 bg-dark-900 border border-gray-700 rounded-md shadow-sm focus:ring-gold-500 focus:border-gold-500 text-white luxury-input">
+                        </div>
+                        <div>
+                            <label for="service" class="block text-sm font-medium text-gray-400">Service of Interest</label>
+                            <select id="service" name="service" class="mt-1 block w-full px-4 py-3 bg-dark-900 border border-gray-700 rounded-md shadow-sm focus:ring-gold-500 focus:border-gold-500 text-white luxury-input">
+                                <option>Select a service...</option>
+                                <option value="Exhibition Stall">Exhibition Stall (with Free 3D Design)</option>
+                                <option value="Wedding Setup">Wedding Setup</option>
+                                <option value="Custom Fabrication">Custom Fabrication</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="message" class="block text-sm font-medium text-gray-400">Tell us about your project (size, colors, event date, or setup code)</label>
+                            <textarea id="message" name="message" rows="4" required class="mt-1 block w-full px-4 py-3 bg-dark-900 border border-gray-700 rounded-md shadow-sm focus:ring-gold-500 focus:border-gold-500 text-white luxury-input"></textarea>
+                        </div>
+                        <div>
+                            <button type="submit" class="w-full bg-gold-500 hover:bg-gold-400 text-black font-bold py-3 px-6 rounded-md text-lg transition-colors shadow-lg uppercase tracking-wide">
+                                Request My Free Design
+                            </button>
+                        </div>
+                    </form>
+
+                    <!-- Contact Details -->
+                    <div class="space-y-6 text-gray-300" data-aos="fade-left">
+                        <div class="flex items-start">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6 text-gold-500 mr-4 mt-1"><path d="M22 16.92v3a2 2 0 0 1-2.18 2-19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.82 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.82.7A2 2 0 0 1 22 16.92z"></path></svg>
+                            <div>
+                                <h4 class="text-xl font-semibold text-white">Phone / WhatsApp (Ketan Badgujar)</h4>
+                                <a href="tel:+919867120277" class="text-gray-400 hover:text-gold-500 transition-colors">+91 98671 20277</a>
+                            </div>
+                        </div>
+                        <div class="flex items-start">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6 text-gold-500 mr-4 mt-1"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+                            <div>
+                                <h4 class="text-xl font-semibold text-white">Email</h4>
+                                <a href="mailto:elegantproductionog@gmail.com" class="text-gray-400 hover:text-gold-500 transition-colors">elegantproductionog@gmail.com</a>
+                            </div>
+                        </div>
+                        <div class="flex items-start">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6 text-gold-500 mr-4 mt-1"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                            <div>
+                                <h4 class="text-xl font-semibold text-white">Address</h4>
+                                <p class="text-gray-400">Mumbai & Nashik</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-black text-gray-500 py-12 border-t border-gray-800">
+        <div class="container mx-auto px-6 text-center">
+            <p class="text-2xl font-serif font-bold text-white mb-4">Elegant <span class="text-gold-500">Production</span></p>
+            <div class="flex justify-center space-x-6 mb-6">
+                <a href="https://www.instagram.com/elegant_production_og?igsh=MWJsdTBzYzZjcWdwMA==" target="_blank" rel="noopener noreferrer" class="hover:text-gold-500 transition-colors">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
+                </a>
+                <a href="#" class="hover:text-gold-500 transition-colors">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg>
+                </a>
+                <a href="#" class="hover:text-gold-500 transition-colors">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle></svg>
+                </a>
+            </div>
+            <p>&copy; 2025 Elegant Production. All rights reserved.</p>
+        </div>
+    </footer>
+
+
+    <script>
+        // Mobile Menu Toggle
+        const menuBtn = document.getElementById('menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+
+        menuBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+
+        // MAIN CATEGORY SWITCHING (Wedding vs Exhibition)
+        const btnWeddings = document.getElementById('btn-weddings');
+        const btnExhibitions = document.getElementById('btn-exhibitions');
+        const weddingSection = document.getElementById('wedding-section');
+        const exhibitionSection = document.getElementById('wedding-section-3d');
+
+        btnWeddings.addEventListener('click', () => {
+            weddingSection.classList.remove('hidden');
+            exhibitionSection.classList.add('hidden');
+
+            btnWeddings.classList.add('tab-btn-active');
+            btnWeddings.classList.remove('tab-btn-inactive');
+            btnExhibitions.classList.add('tab-btn-inactive');
+            btnExhibitions.classList.remove('tab-btn-active');
+        });
+
+        btnExhibitions.addEventListener('click', () => {
+            exhibitionSection.classList.remove('hidden');
+            weddingSection.classList.add('hidden');
+
+            btnExhibitions.classList.add('tab-btn-active');
+            btnExhibitions.classList.remove('tab-btn-inactive');
+            btnWeddings.classList.add('tab-btn-inactive');
+            btnWeddings.classList.remove('tab-btn-active');
+        });
+
+        // WEDDING SUB-CATEGORY SWITCHING
+        function showWeddingSub(category) {
+            // Hide all wedding sub-galleries
+            const allSubGalleries = document.querySelectorAll('.wedding-sub-gallery');
+            allSubGalleries.forEach(gal => gal.classList.add('hidden'));
+
+            // Show selected gallery
+            document.getElementById('gallery-wedding-' + category).classList.remove('hidden');
+
+            // Reset all sub-buttons
+            const allSubBtns = document.querySelectorAll('.sub-tab-btn');
+            allSubBtns.forEach(btn => {
+                if(btn.id.startsWith('sub-btn-stage') || btn.id.startsWith('sub-btn-entry') || btn.id.startsWith('sub-btn-selfie') || btn.id.startsWith('sub-btn-itinerary') || btn.id.startsWith('sub-btn-props') || btn.id.startsWith('sub-btn-tabletop')) {
+                    btn.classList.remove('sub-tab-active');
+                    btn.classList.add('sub-tab-inactive');
+                }
+            });
+
+            // Activate selected button
+            const activeBtn = document.getElementById('sub-btn-' + category);
+            activeBtn.classList.add('sub-tab-active');
+            activeBtn.classList.remove('sub-tab-inactive');
+        }
+
+        // EXHIBITION SUB-CATEGORY SWITCHING
+        function showExhibitionSub(category) {
+            // Hide all exhibition sub-galleries
+            const allSubGalleries = document.querySelectorAll('.exhibition-sub-gallery');
+            allSubGalleries.forEach(gal => gal.classList.add('hidden'));
+
+            // Show selected gallery
+            document.getElementById('gallery-exhibition-' + category).classList.remove('hidden');
+
+            // Reset buttons
+            document.getElementById('sub-btn-3d').classList.remove('sub-tab-active');
+            document.getElementById('sub-btn-3d').classList.add('sub-tab-inactive');
+            document.getElementById('sub-btn-real').classList.remove('sub-tab-active');
+            document.getElementById('sub-btn-real').classList.add('sub-tab-inactive');
+
+            // Activate button
+            const activeBtn = document.getElementById('sub-btn-' + (category === '3d' ? '3d' : 'real'));
+            activeBtn.classList.add('sub-tab-active');
+            activeBtn.classList.remove('sub-tab-inactive');
+        }
+
+        // Lightbox Functions
+        const lightbox = document.getElementById('lightbox');
+        const lightboxImg = document.getElementById('lightbox-img');
+        const lightboxCaption = document.getElementById('lightbox-caption');
+        const lightboxClose = document.getElementById('lightbox-close');
+
+        function openLightbox(element) {
+            const img = element.querySelector('img');
+            const caption = element.querySelector('p').innerText;
+            
+            lightboxImg.src = img.src;
+            lightboxCaption.innerText = caption;
+            lightbox.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        lightboxClose.addEventListener('click', () => {
+            lightbox.classList.remove('active');
+            document.body.style.overflow = 'auto';
+        });
+
+        lightbox.addEventListener('click', (e) => {
+            if (e.target === lightbox) {
+                lightbox.classList.remove('active');
+                document.body.style.overflow = 'auto';
+            }
+        });
+
+        // Initialize Animations
+        // Using AOS library for scroll animations
+        document.addEventListener('DOMContentLoaded', function() {
+             AOS.init({
+                 once: true,
+                 offset: 50,
+                 duration: 800,
+             });
+        });
+
+        // Also load AOS script dynamically if not present (redundancy check)
+        if (typeof AOS === 'undefined') {
+            var script = document.createElement('script');
+            script.src = 'https://unpkg.com/aos@2.3.1/dist/aos.js';
+            script.onload = function() {
+                AOS.init({
+                     once: true,
+                     offset: 50,
+                     duration: 800,
+                 });
+            };
+            document.body.appendChild(script);
+        }
+        
+        // Smooth Scrolling
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                if (!mobileMenu.classList.contains('hidden')) {
+                    mobileMenu.classList.add('hidden');
+                }
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+
+    </script>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+</body>
+</html>
+
+
